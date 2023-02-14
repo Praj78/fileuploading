@@ -1,14 +1,14 @@
 const express = require('express')
-const app=express()
-
-app.use(express.json())
-app.use(express.static('Content'))
 const {connectDB}=require('./config/db')
+const userRotes=require('./routes/user')
 
-app.use(express.urlencoded({extends:false}))
-
+const app=express()
+app.use(express.json())
+app.use(express.static('content'))
+app.use(express.urlencoded({extended:false}))
 
 const PORT = 1338
+app.use('/api/v1/user',userRotes)
 app.listen(PORT,()=>{
     console.log('server is running')
     connectDB()
