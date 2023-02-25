@@ -40,4 +40,13 @@ const isSeller=async(req,res,next)=>{
         })
     }
 }
-module.exports={isAuthenticated,isSeller}
+const isBuyer =async(req,res,next)=>{
+    if(!req.user.dataValues.isSeller){
+        next()
+    }else{
+        res.status(401).json({
+            err:"u are not buyer"
+        })
+    }
+}
+module.exports={isAuthenticated,isSeller,isBuyer}
