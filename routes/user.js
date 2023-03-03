@@ -8,6 +8,61 @@ const {
     validateEmail,
     validatePassword
 }=require('../utils/validators')
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *         - isSeller
+ *       properties:
+ *         id:
+ *           type: INTEGER
+ *           description: The auto-generated id of the user
+ *         name:
+ *           type: STRING
+ *           description: The name of the user
+ *         email:
+ *           type: STRING
+ *           description: The email of the user
+ *         password:
+ *           type: STRING
+ *           description: The password of the user
+ *         isSeller:
+ *           type: BOOLEAN
+ *           description: The role of the user
+ *       example:
+ *         name: Harsh
+ *         email: hk@gmail.com
+ *         password: Harsh@58
+ *         isSeller: true
+ */
+/**
+ * @swagger
+ * /api/v1/user/signup:
+ *   post:
+ *     summary: Create a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: The user was successfully created
+ *       403:
+ *         description: There was already an existing user with the same email
+ *       400:
+ *         description: Validation failed for the name, email or password
+ *       500:
+ *         description: Some server error
+ */
 router.post('/signup',async(req,res)=>{
     try{      
         const {name,email,password,isSeller}=req.body
@@ -42,7 +97,37 @@ router.post('/signup',async(req,res)=>{
     }
  
 })
-
+/**
+ * @swagger
+ * /api/v1/user/signin:
+ *   post:
+ *     summary: Sign in an existing user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *           type: object
+ *           properties:
+ *            email:
+ *             type: string
+ *             description: The email of the user
+ *            password:
+ *             type: string
+ *             description: The password of the user
+ *          example:
+ *           email: hk@gmail.com
+ *           password: Harsh@58
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *       403:
+ *         description: No user with the entered email exists
+ *       400:
+ *         description: Validation failed for the name, email or password
+ *       500:
+ *         description: Some server error
+ */
 router.post('/signin',async(req,res)=>{
     try{
         const {email,password} = req.body
@@ -72,14 +157,24 @@ router.post('/signin',async(req,res)=>{
         const bearerToken =await jwt.sign(payload,"SECRET MESSAGE",{expiresIn:36000})
         res.cookie('t',bearerToken,{expire:new Date()+6677})
         return res.status(200).json({
-            bearerToken
+            message: "Signed In Successfully!", bearerToken: bearerToken
         })
 
     }catch(e){
         return res.status(500).send(e)
     }
 })
-
+/**
+ * @swagger
+ * /api/v1/user/signout:
+ *   get:
+ *     summary: Sign in an out the user
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *       500:
+ *         description: Some server error
+ */
 router.get('/signout',async(req,res)=>{
     try{
         res.clearCookie('t')

@@ -2,13 +2,16 @@ const express = require('express')
 const router=express.Router()
 const upload = require('../utils/fileUpload')
 const Product=require('../models/productModels')
+require("dotenv").config()
 const {isAuthenticated,isSeller, isBuyer}=require('../middlewares/auth')
 const Order=require("../models/orderModel")
-const stripe = require('stripe')('u can add ur stripe key')
+const stripe = require('stripe')(process.env.STRIPE)
 const {WebhookClient}=require('discord.js')
+const BASE_URL = process.env.BASE_URL;
+
 
 const webhook= new WebhookClient({
-    url:"u can enter webhook url of discord"
+    url:process.env.DISCORD,
 })
 
 
@@ -74,6 +77,7 @@ router.post('/buy/:productID',isAuthenticated,isBuyer,async(req,res)=>{
             productPrice: product.dataValues.price,
             buyerID: req.user.dataValues.id,
             buyerEmail: req.user.dataValues.email,
+            
 
         }
         
